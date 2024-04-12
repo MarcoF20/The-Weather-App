@@ -15,8 +15,12 @@ const geoCodingResponse = async (city) => {
 
 function App () {
   const [city, setCity] = useState(null)
-
+  const firstUpdate = useRef(true)
   useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false
+      return
+    }
     async function fetchCoordinates () {
       const { lat, lon } = await geoCodingResponse(city)
       console.log(lat)
