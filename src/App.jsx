@@ -9,12 +9,14 @@ const geoCodingResponse = async (city) => {
     const { lat, lon } = data[0]
     return { lat, lon }
   } catch (e) {
-    return 'Something went wrong'
+    return e
   }
 }
 
 function App () {
   const [city, setCity] = useState(null)
+  const [latitude, setLatitude] = useState()
+  const [longitude, setLongitude] = useState()
   const firstUpdate = useRef(true)
   useEffect(() => {
     if (firstUpdate.current) {
@@ -23,8 +25,11 @@ function App () {
     }
     async function fetchCoordinates () {
       const { lat, lon } = await geoCodingResponse(city)
-      console.log(lat)
-      console.log(lon)
+      if (lat === undefined || lon === undefined) {
+        return console.log('something went wrong')
+      }
+      setLatitude(lat)
+      setLongitude(lon)
     }
     fetchCoordinates()
   }, [city])
