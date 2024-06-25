@@ -14,9 +14,15 @@ const geoCodingResponse = async (city) => {
 }
 
 function App () {
-  const [city, setCity] = useState(null)
-  const [latitude, setLatitude] = useState()
-  const [longitude, setLongitude] = useState()
+  const [city, setCity] = useState('')
+  const [temperature, setTemperature] = useState(null)
+  const fetchWeather = async (latitude, longitude) => {
+    const weatherAPIUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
+    const response = await fetch(weatherAPIUrl)
+    const data = await response.json()
+    const temp = Math.round(data.main.temp)
+    setTemperature(temp)
+  }
   const firstUpdate = useRef(true)
   useEffect(() => {
     if (firstUpdate.current) {
@@ -28,8 +34,8 @@ function App () {
       if (lat === undefined || lon === undefined) {
         return console.log('something went wrong')
       }
-      setLatitude(lat)
-      setLongitude(lon)
+      console.log(lat + ' ' + lon)
+      fetchWeather(lat, lon)
     }
     fetchCoordinates()
   }, [city])
@@ -48,6 +54,12 @@ function App () {
         </label>
         <input type='submit' value='Enter' />
       </form>
+      {
+        city != null ? <h1>{city}</h1> : null
+      }
+      {
+        temperature != null ? <h1>Current temperature is {temperature}</h1> : null
+      }
     </>
   )
 }
